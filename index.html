@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MovieZone</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#0b0d12;color:#f5f6fa;font-family:Arial,sans-serif}header{background:#171a23;padding:17px 5%;display:flex;justify-content:space-between;align-items:center;gap:12px;position:sticky;top:0;z-index:2}.logo{font-size:22px;font-weight:bold;color:#ff4965}nav{display:flex;gap:15px}a{color:#fff;text-decoration:none}.hero{padding:45px 18px;text-align:center;background:linear-gradient(120deg,#42203c,#14283e)}.hero h1{font-size:36px;margin:8px}.hero p{color:#ddd}.wrap{max-width:1100px;margin:auto;padding:22px 16px}.search{width:100%;padding:14px;border:1px solid #343b4b;border-radius:9px;background:#202532;color:white;font-size:16px;margin:8px 0 22px}.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.card{background:#191e29;border-radius:11px;overflow:hidden}.poster{width:100%;height:190px;object-fit:cover;background:linear-gradient(140deg,#8e3155,#263b60);display:flex;align-items:center;justify-content:center;font-size:42px}.info{padding:12px}.info h3{margin:0 0 8px}.muted{color:#aeb5c3;font-size:13px}.btn{border:0;border-radius:7px;padding:10px 13px;background:#ff4965;color:#fff;font-weight:bold;cursor:pointer}.secondary{background:#30394a}.admin{margin:25px 0;padding:18px;background:#171c27;border:1px solid #303849;border-radius:12px}.admin h2{margin-top:0}.field{display:block;width:100%;padding:12px;margin:9px 0 13px;border:1px solid #394254;border-radius:7px;background:#0f131c;color:white;font-size:15px}.admin label{font-size:13px;color:#cbd1dc}.admin-row{display:flex;gap:8px;flex-wrap:wrap}.admin-row>*{flex:1}.item{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #303849}.item button{flex-shrink:0}.notice{font-size:12px;line-height:1.6;color:#aeb5c3}footer{text-align:center;padding:25px;color:#8e96a6}
+@media(min-width:700px){.cards{grid-template-columns:repeat(4,minmax(0,1fr))}.poster{height:230px}}
+</style></head>
+<body>
+<header><div class="logo">MOVIEZONE</div><nav><a href="#home">হোম</a><a href="#catalog">ক্যাটালগ</a><a href="#admin">অ্যাডমিন</a></nav></header>
+<section class="hero" id="home"><p>আপনার বিনোদনের ক্যাটালগ</p><h1>MovieZone</h1><p>মুভি, নাটক ও সিরিজের তথ্য, ট্রেলার ও রিভিউ</p></section>
+<main class="wrap"><input id="search" class="search" placeholder="নাম দিয়ে খুঁজুন..." oninput="render()"><h2 id="catalog">মুভি ও সিরিজ</h2><div id="cards" class="cards"></div>
+<section class="admin" id="admin"><h2>অ্যাডমিন প্যানেল</h2><p class="notice">এখানে যোগ করা তথ্য এই ডিভাইসের এই ব্রাউজারে সংরক্ষিত হবে। এটি এখনো অনলাইন সার্ভার বা নিরাপদ লগইন-যুক্ত অ্যাডমিন প্যানেল নয়। কেবল নিজের/লাইসেন্সকৃত পোস্টার ও অফিসিয়াল ভিডিও লিংক ব্যবহার করুন।</p>
+<form id="addForm"><label>নাম</label><input class="field" id="title" required placeholder="যেমন: Sample Film"><div class="admin-row"><div><label>ধরন</label><select class="field" id="kind"><option>মুভি</option><option>সিরিজ</option><option>নাটক</option><option>ট্রেলার</option></select></div><div><label>সাল</label><input class="field" id="year" placeholder="2026"></div></div>
+<label>পোস্টারের ছবির URL (ঐচ্ছিক)</label><input class="field" id="poster" type="url" placeholder="https://example.com/poster.jpg">
+<label>অনুমোদিত ট্রেলার/ভিডিও লিংক (ঐচ্ছিক)</label><input class="field" id="video" type="url" placeholder="https://...">
+<label>সংক্ষিপ্ত বিবরণ</label><textarea class="field" id="description" rows="2" placeholder="বিবরণ লিখুন"></textarea><button class="btn" type="submit">ক্যাটালগে যোগ করুন</button></form>
+<h3>যোগ করা কনটেন্ট</h3><div id="manageList"></div><button class="btn secondary" onclick="resetDemo()">ডেমো কনটেন্ট ফিরিয়ে আনুন</button>
+</section></main><footer>© 2026 MovieZone</footer>
+<script>
+const demo=[
+{id:1,title:"Sample Movie",kind:"মুভি",year:"2026",poster:"",video:"",description:"নমুনা মুভির বিবরণ"},
+{id:2,title:"City Stories",kind:"সিরিজ",year:"2026",poster:"",video:"",description:"নমুনা সিরিজের বিবরণ"},
+{id:3,title:"The Journey",kind:"মুভি",year:"2025",poster:"",video:"",description:"নমুনা মুভির বিবরণ"},
+{id:4,title:"Night Mystery",kind:"সিরিজ",year:"2025",poster:"",video:"",description:"নমুনা সিরিজের বিবরণ"}];
+let entries;try{entries=JSON.parse(localStorage.getItem("moviezone_entries"))||demo}catch(e){entries=demo}
+function save(){localStorage.setItem("moviezone_entries",JSON.stringify(entries))}
+function esc(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function render(){let q=document.getElementById("search").value.toLowerCase();let list=entries.filter(x=>(x.title+" "+x.kind).toLowerCase().includes(q));document.getElementById("cards").innerHTML=list.map(x=>`<article class="card"><div class="poster">${x.poster?`<img src="${esc(x.poster)}" alt="${esc(x.title)} poster" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.textContent='🎬'">`:"🎬"}</div><div class="info"><h3>${esc(x.title)}</h3><p class="muted">${esc(x.kind)} • ${esc(x.year)}</p><p class="muted">${esc(x.description)}</p>${x.video?`<a class="btn" href="${esc(x.video)}" target="_blank" rel="noopener">অফিসিয়াল ভিডিও/ট্রেলার</a>`:""}</div></article>`).join("")||"<p>কোনো ফল পাওয়া যায়নি।</p>";document.getElementById("manageList").innerHTML=entries.map(x=>`<div class="item"><span>${esc(x.title)} <small class="muted">(${esc(x.kind)})</small></span><button class="btn secondary" onclick="removeEntry(${x.id})">মুছুন</button></div>`).join("")}
+document.getElementById("addForm").addEventListener("submit",e=>{e.preventDefault();entries.unshift({id:Date.now(),title:document.getElementById("title").value.trim(),kind:document.getElementById("kind").value,year:document.getElementById("year").value.trim(),poster:document.getElementById("poster").value.trim(),video:document.getElementById("video").value.trim(),description:document.getElementById("description").value.trim()});save();e.target.reset();render();alert("ক্যাটালগে যোগ হয়েছে।")});
+function removeEntry(id){entries=entries.filter(x=>x.id!==id);save();render()}
+function resetDemo(){if(confirm("ডেমো কনটেন্ট ফিরিয়ে আনবেন?")){entries=demo;save();render()}}
+render();
+</script></body></html>
